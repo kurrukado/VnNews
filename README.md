@@ -1,50 +1,31 @@
-# 📰 VnNews - Ứng Dụng Đọc Báo Việt Nam (VnExpress Reader)
+# VnNews - Ứng Dụng Đọc Báo Việt Nam (VnExpress Reader)
 
-Ứng dụng đọc báo tin tức hiện đại viết bằng **Jetpack Compose (Material 3)**, triển khai toàn diện và đáp ứng 100% các tiêu chí kỹ thuật từ **Unit 4 đến Unit 8** của giáo trình **Android Basics with Compose (Google)**.
-
----
-
-## 📥 Tải Về & Trải Nghiệm Ứng Dụng
-* **Bản phát hành APK chính thức:** [Tải file `app-debug.apk` tại mục Releases (v1.0.0)](https://github.com/kurrukado/VnNews/releases/tag/v1.0.0)
-* **Tệp báo cáo học phần:** [`BaoCao_VnNews_Android_Compose_MoiNhat.docx`](BaoCao_VnNews_Android_Compose_MoiNhat.docx) *(Bản báo cáo Word chuẩn học thuật kèm hình ảnh minh họa)*
-
----
-
-## 📱 Hình Ảnh Thực Tế Ứng Dụng Đang Chạy
-
-| Trang chủ (Light Mode) | Giao diện Tối (Dark Mode) |
-| :---: | :---: |
-| <img src="screenshots/screenshot_home.png" width="300" /> | <img src="screenshots/screenshot_dark_mode.png" width="300" /> |
-| *Lọc 5 chuyên mục, tải tin tức & ảnh mượt mà* | *Lưu trạng thái giao diện qua DataStore Preferences* |
-
-| Đọc báo gốc (WebView Interop) | Bài viết đã lưu (Bookmarks Offline) |
-| :---: | :---: |
-| <img src="screenshots/screenshot_detail.png" width="300" /> | <img src="screenshots/screenshot_bookmarks.png" width="300" /> |
-| *Nhúng WebView tràn viền 100%, có BackHandler* | *Đọc ngoại tuyến từ Room Database kể cả khi tắt mạng* |
+Ứng dụng đọc tin tức hiện đại viết bằng **Jetpack Compose**, đáp ứng 100% các tiêu chí kỹ thuật từ **Unit 4 đến Unit 8** của giáo trình **Android Basics with Compose (Google)**.
 
 ---
 
 ## 📌 Bảng Đối Chiếu Kiến Thức Giáo Trình (Checklist Chấm Điểm)
 
-| Khối kiến thức (Unit) | Công nghệ & Kỹ thuật | Thành phần & File trong Project |
+| Khối kiến thức (Unit) | Công nghệ sử dụng | Thành phần & File trong Project |
 | :--- | :--- | :--- |
-| **Unit 4: Architecture & Navigation** | • Mô hình **MVVM** + **Repository Pattern**<br>• Quản lý UI State bằng **StateFlow** (UDF)<br>• **Jetpack Navigation Compose** | • [`NewsNavGraph.kt`](app/src/main/java/com/example/vnnews/ui/navigation/NewsNavGraph.kt)<br>• [`HomeViewModel.kt`](app/src/main/java/com/example/vnnews/ui/home/HomeViewModel.kt)<br>• [`NewsRepository.kt`](app/src/main/java/com/example/vnnews/data/repository/NewsRepository.kt) |
-| **Unit 5: Connect to Internet & Images** | • **Retrofit 2** + OkHttp Header Interceptor<br>• Phân tích XML RSS trực tiếp từ VnExpress (`VnExpressRssParser`)<br>• **Coil (`AsyncImage`)** tải và cache ảnh | • [`VnExpressRssParser.kt`](app/src/main/java/com/example/vnnews/data/remote/VnExpressRssParser.kt)<br>• [`NewsApiService.kt`](app/src/main/java/com/example/vnnews/data/remote/NewsApiService.kt)<br>• [`HomeScreen.kt`](app/src/main/java/com/example/vnnews/ui/home/HomeScreen.kt) |
-| **Unit 6: Data Persistence** | • **Room Database 2.7.2** (Entity, DAO, TypeConverters, Flow)<br>• **DataStore Preferences** lưu cấu hình Dark Mode & chuyên mục | • [`ArticleEntity.kt`](app/src/main/java/com/example/vnnews/data/local/ArticleEntity.kt)<br>• [`ArticleDao.kt`](app/src/main/java/com/example/vnnews/data/local/ArticleDao.kt)<br>• [`AppDatabase.kt`](app/src/main/java/com/example/vnnews/data/local/AppDatabase.kt)<br>• [`UserPreferencesRepository.kt`](app/src/main/java/com/example/vnnews/data/local/UserPreferencesRepository.kt) |
-| **Unit 7: WorkManager** | • **PeriodicWorkRequest** chu kỳ 12 giờ<br>• Ràng buộc kết nối mạng (`Constraints`)<br>• Phát **Notification** tin nóng & Quyền Android 13+ | • [`DailyNewsNotificationWorker.kt`](app/src/main/java/com/example/vnnews/worker/DailyNewsNotificationWorker.kt)<br>• [`NewsApplication.kt`](app/src/main/java/com/example/vnnews/NewsApplication.kt)<br>• [`MainActivity.kt`](app/src/main/java/com/example/vnnews/MainActivity.kt) |
-| **Unit 8: Views in Compose (Interop)** | • Nhúng **`WebView`** truyền thống bằng **`AndroidView`**<br>• Tràn viền 100% (MATCH_PARENT)<br>• Hỗ trợ WebChromeClient & **`BackHandler`** lùi trang | • [`ArticleWebView.kt`](app/src/main/java/com/example/vnnews/ui/detail/ArticleWebView.kt)<br>• [`DetailScreen.kt`](app/src/main/java/com/example/vnnews/ui/detail/DetailScreen.kt) |
+| **Unit 4: Architecture & Navigation** | • Mô hình **MVVM** + **Repository Pattern**<br>• Quản lý UI State bằng **StateFlow** (UDF)<br>• **Jetpack Navigation Compose** | • `ui/navigation/NewsNavGraph.kt`<br>• `ui/home/HomeViewModel.kt`<br>• `data/repository/NewsRepository.kt` |
+| **Unit 5: Connect to Internet & Images** | • **Retrofit 2** + Gson Converter<br>• Gọi API RSS VnExpress qua `rss2json`<br>• **Coil (`AsyncImage`)** tải và cache ảnh | • `data/remote/NewsApiService.kt`<br>• `data/remote/NewsResponseDto.kt`<br>• `ui/home/HomeScreen.kt` |
+| **Unit 6: Data Persistence** | • **Room Database** (Entity, DAO, Flow)<br>• **DataStore Preferences** lưu cấu hình người dùng | • `data/local/ArticleEntity.kt`<br>• `data/local/ArticleDao.kt`<br>• `data/local/AppDatabase.kt`<br>• `data/local/UserPreferencesRepository.kt` |
+| **Unit 7: WorkManager** | • **PeriodicWorkRequest** chạy tác vụ nền<br>• Ràng buộc kết nối mạng (`Constraints`)<br>• Phát **Notification** thông báo tin nóng | • `worker/DailyNewsNotificationWorker.kt`<br>• Khởi tạo tại `NewsApplication.kt` |
+| **Unit 8: Views in Compose (Interop)** | • Nhúng **`WebView`** truyền thống vào Compose bằng **`AndroidView`** | • `ui/detail/ArticleWebView.kt`<br>• `ui/detail/DetailScreen.kt` |
 
 ---
 
-## 🧪 Kết Quả Kiểm Thử (Unit Tests)
-Dự án được trang bị bộ kiểm thử tự động toàn diện trong thư mục `app/src/test/`:
-* **55/55 Unit tests hoàn thành thành công (100% PASS)**.
-* Kiểm thử đầy đủ `HomeViewModel`, `BookmarksViewModel`, `MainViewModel`, `NewsRepository`, và Room `Converters`.
+## 🚀 Các Tính Năng Chính
+1. **Duyệt tin đa chuyên mục:** Mới nhất, Công nghệ (Số hóa), Kinh doanh, Thể thao, Giải trí.
+2. **Đọc báo gốc trong ứng dụng:** Bấm vào bất kỳ tin nào để mở trang web chính thức của VnExpress qua `AndroidView(WebView)`.
+3. **Lưu tin đọc Offline (Room Database):** Bấm biểu tượng Bookmark để lưu bài báo vào máy, xem lại mọi lúc kể cả khi ngắt kết nối mạng.
+4. **Thông báo tin mới định kỳ (WorkManager):** Tự động kiểm tra và thông báo tin mới mỗi 12 tiếng.
 
 ---
 
-## 🛠 Hướng Dẫn Cài Đặt & Chạy Trên Máy Cục Bộ
-1. Mở thư mục dự án `D:\VnNews` bằng **Android Studio**.
-2. Chờ Gradle hoàn tất quá trình đồng bộ (Sync Project).
-3. Chọn thiết bị chạy (Máy ảo Emulator hoặc máy thật cắm cáp / WiFi ADB).
+## 🛠 Hướng Dẫn Cài Đặt & Chạy
+1. Mở thư mục dự án bằng **Android Studio Ladybug / Meerkat**.
+2. Chờ Gradle đồng bộ (Sync Project with Gradle Files).
+3. Chọn máy ảo (Emulator Android 8.0+ / API 26+) hoặc máy thật cắm cáp USB.
 4. Nhấn **Run 'app'** (`Shift + F10`).
