@@ -1,6 +1,7 @@
 package com.example.vnnews.ui.navigation
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmarks
@@ -105,7 +106,7 @@ fun NewsApp(
         NavHost(
             navController = navController,
             startDestination = NewsDestination.Home.route,
-            modifier = Modifier.padding(innerPadding)
+            modifier = if (showBars) Modifier.padding(innerPadding) else Modifier.fillMaxSize()
         ) {
             composable(NewsDestination.Home.route) {
                 HomeScreen(
