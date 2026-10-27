@@ -62,7 +62,7 @@
 |---|------|-------|-------------|--------|
 | M1 | Complete Curriculum Integration (Units 4-8) & Unit Tests | Connect DataStore to HomeViewModel & MainActivity, add Room TypeConverter, add POST_NOTIFICATIONS runtime prompt, fix URL double-decoding, add WebView BackHandler, implement unit tests | Survey complete | DONE |
 | M2 | Local APK Build Generation & Build Verification | Execute `./gradlew.bat assembleDebug`, verify exit code 0, verify `app/build/outputs/apk/debug/app-debug.apk` artifact existence and integrity | M1 | DONE |
-| M3 | GitHub Repository Sync & Release v1.0.0 Publication | Update `.gitignore`, commit clean code to `main`, push to `origin/main`, tag `v1.0.0`, create GitHub Release with APK asset attached | M2 | IN_PROGRESS |
+| M3 | GitHub Repository Sync & Release v1.0.0 Publication | Update `.gitignore`, commit clean code to `main`, push to `origin/main`, tag `v1.0.0`, create GitHub Release with APK asset attached | M2 | DONE |
 
 ## Interface Contracts
 ### DataStore ↔ HomeViewModel & MainActivity
