@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
@@ -24,6 +25,17 @@ fun ArticleWebView(
     modifier: Modifier = Modifier
 ) {
     var isLoading by remember { mutableStateOf(true) }
+    var webView: WebView? by remember { mutableStateOf(null) }
+    var canGoBack by remember { mutableStateOf(false) }
+
+    BackHandler(enabled = canGoBack) {
+        webView?.let {
+            if (it.canGoBack()) {
+                it.goBack()
+                canGoBack = it.canGoBack()
+            }
+        }
+    }
 
     Box(modifier = modifier.fillMaxSize()) {
         AndroidView(
@@ -38,20 +50,29 @@ fun ArticleWebView(
                     webViewClient = object : WebViewClient() {
                         override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                             isLoading = true
+                            canGoBack = view?.canGoBack() == true
                         }
 
                         override fun onPageFinished(view: WebView?, url: String?) {
                             isLoading = false
+                            canGoBack = view?.canGoBack() == true
+                        }
+
+                        override fun doUpdateVisitedHistory(view: WebView?, url: String?, isReload: Boolean) {
+                            super.doUpdateVisitedHistory(view, url, isReload)
+                            canGoBack = view?.canGoBack() == true
                         }
                     }
 
                     webChromeClient = WebChromeClient()
                     loadUrl(url)
+                    webView = this
                 }
             },
-            update = { webView ->
-                if (webView.url != url) {
-                    webView.loadUrl(url)
+            update = { currentWebView ->
+                webView = currentWebView
+                if (currentWebView.url != url) {
+                    currentWebView.loadUrl(url)
                 }
             }
         )

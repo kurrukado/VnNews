@@ -33,6 +33,8 @@ class UserPreferencesRepository(private val dataStore: DataStore<Preferences>) {
         }
     }
 
+    suspend fun saveDarkTheme(isDark: Boolean) = saveDarkThemePreference(isDark)
+
     val selectedCategory: Flow<String> = dataStore.data
         .catch { exception ->
             if (exception is IOException) emit(emptyPreferences()) else throw exception

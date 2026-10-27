@@ -7,9 +7,12 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.vnnews.NewsApplication
+import com.example.vnnews.data.local.UserPreferencesRepository
 import com.example.vnnews.data.remote.RssItemDto
 import com.example.vnnews.data.repository.NewsCategory
 import com.example.vnnews.data.repository.NewsRepository
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -29,7 +32,8 @@ sealed interface HomeUiState {
 }
 
 class HomeViewModel(
-    private val newsRepository: NewsRepository
+    private val newsRepository: NewsRepository,
+    private val userPreferencesRepository: UserPreferencesRepository? = null
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.Loading)
@@ -37,10 +41,26 @@ class HomeViewModel(
 
     private val categories = newsRepository.getCategories()
     private var currentCategory = categories.first()
+    private var fetchJob: Job? = null
 
     init {
         observeBookmarks()
-        loadNews(currentCategory)
+        loadInitialNews()
+    }
+
+    private fun loadInitialNews() {
+        viewModelScope.launch {
+            val savedCategoryId = try {
+                userPreferencesRepository?.selectedCategory?.first()
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                null
+            }
+            val initialCategory = categories.find { it.id == savedCategoryId } ?: categories.first()
+            currentCategory = initialCategory
+            loadNews(initialCategory)
+        }
     }
 
     private fun observeBookmarks() {
@@ -58,6 +78,15 @@ class HomeViewModel(
     fun selectCategory(category: NewsCategory) {
         if (currentCategory.id == category.id && _uiState.value is HomeUiState.Success) return
         currentCategory = category
+        viewModelScope.launch {
+            try {
+                userPreferencesRepository?.saveSelectedCategory(category.id)
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                // Log or ignore to prevent UI disruption
+            }
+        }
         loadNews(category)
     }
 
@@ -73,11 +102,14 @@ class HomeViewModel(
 
     private fun loadNews(category: NewsCategory) {
         _uiState.value = HomeUiState.Loading
-        viewModelScope.launch {
+        fetchJob?.cancel()
+        fetchJob = viewModelScope.launch {
             try {
                 val articles = newsRepository.getNews(category.rssUrl)
                 val bookmarkedUrls = try {
                     newsRepository.getBookmarkedArticles().first().map { it.link }.toSet()
+                } catch (e: CancellationException) {
+                    throw e
                 } catch (e: Exception) {
                     emptySet()
                 }
@@ -87,6 +119,8 @@ class HomeViewModel(
                     selectedCategory = category,
                     bookmarkedUrls = bookmarkedUrls
                 )
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: IOException) {
                 _uiState.value = HomeUiState.Error("Không có kết nối mạng hoặc máy chủ không phản hồi. Vui lòng thử lại!")
             } catch (e: Exception) {
@@ -99,7 +133,10 @@ class HomeViewModel(
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 val application = (this[APPLICATION_KEY] as NewsApplication)
-                HomeViewModel(application.container.newsRepository)
+                HomeViewModel(
+                    newsRepository = application.container.newsRepository,
+                    userPreferencesRepository = application.container.userPreferencesRepository
+                )
             }
         }
     }

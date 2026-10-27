@@ -1,17 +1,24 @@
 package com.example.vnnews.ui.navigation
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmarks
+import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.LightMode
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -24,21 +31,44 @@ import com.example.vnnews.ui.bookmarks.BookmarksScreen
 import com.example.vnnews.ui.detail.DetailScreen
 import com.example.vnnews.ui.home.HomeScreen
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewsApp(
+    isDarkTheme: Boolean = isSystemInDarkTheme(),
+    onToggleTheme: () -> Unit = {},
     navController: NavHostController = rememberNavController()
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
-    val showBottomBar = currentRoute in listOf(
+    val showBars = currentRoute in listOf(
         NewsDestination.Home.route,
         NewsDestination.Bookmarks.route
     )
 
     Scaffold(
+        topBar = {
+            if (showBars) {
+                TopAppBar(
+                    title = {
+                        Text(
+                            text = if (currentRoute == NewsDestination.Home.route) "VnNews" else "Bài viết đã lưu",
+                            fontWeight = FontWeight.Bold
+                        )
+                    },
+                    actions = {
+                        IconButton(onClick = onToggleTheme) {
+                            Icon(
+                                imageVector = if (isDarkTheme) Icons.Default.LightMode else Icons.Default.DarkMode,
+                                contentDescription = if (isDarkTheme) "Chuyển sang chế độ sáng" else "Chuyển sang chế độ tối"
+                            )
+                        }
+                    }
+                )
+            }
+        },
         bottomBar = {
-            if (showBottomBar) {
+            if (showBars) {
                 NavigationBar {
                     NavigationBarItem(
                         selected = currentRoute == NewsDestination.Home.route,
