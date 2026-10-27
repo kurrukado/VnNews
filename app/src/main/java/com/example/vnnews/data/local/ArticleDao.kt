@@ -22,7 +22,7 @@ interface ArticleDao {
     suspend fun insertOrUpdate(article: ArticleEntity)
 
     @Query("UPDATE articles SET isBookmarked = :isBookmarked WHERE link = :link")
-    suspend fun updateBookmarkStatus(link: String, isBookmarked: Boolean)
+    suspend fun updateBookmarkStatus(link: String, isBookmarked: Boolean): Int
 
     @Delete
     suspend fun delete(article: ArticleEntity)
