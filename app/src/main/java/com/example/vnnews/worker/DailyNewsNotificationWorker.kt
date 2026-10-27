@@ -24,7 +24,7 @@ class DailyNewsNotificationWorker(
             val app = applicationContext as? NewsApplication
             val repository = app?.container?.newsRepository
             val categories = repository?.getCategories() ?: emptyList()
-            val latestCategory = categories.firstOrNull()?.rssUrl ?: "https://vnexpress.net/rss/tin-moi-nhat.rss"
+            val latestCategory = categories.firstOrNull()?.rssUrl ?: "https://vnexpress.net/rss/tin-noi-bat.rss"
 
             val news = repository?.getNews(latestCategory)
             val topArticle = news?.firstOrNull()

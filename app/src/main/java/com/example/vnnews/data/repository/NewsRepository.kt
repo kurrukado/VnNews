@@ -27,8 +27,8 @@ class NetworkNewsRepository(
 ) : NewsRepository {
 
     override fun getCategories(): List<NewsCategory> = listOf(
-        NewsCategory("tin-moi-nhat", "Mới nhất", "https://vnexpress.net/rss/tin-moi-nhat.rss"),
-        NewsCategory("so-hoa", "Công nghệ", "https://vnexpress.net/rss/so-hoa.rss"),
+        NewsCategory("tin-moi-nhat", "Mới nhất", "https://vnexpress.net/rss/tin-noi-bat.rss"),
+        NewsCategory("so-hoa", "Công nghệ", "https://vnexpress.net/rss/khoa-hoc-cong-nghe.rss"),
         NewsCategory("kinh-doanh", "Kinh doanh", "https://vnexpress.net/rss/kinh-doanh.rss"),
         NewsCategory("the-thao", "Thể thao", "https://vnexpress.net/rss/the-thao.rss"),
         NewsCategory("giai-tri", "Giải trí", "https://vnexpress.net/rss/giai-tri.rss")
